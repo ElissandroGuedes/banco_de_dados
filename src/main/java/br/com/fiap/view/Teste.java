@@ -3,6 +3,10 @@ import br.com.fiap.Dao.ContaDao;
 import br.com.fiap.Dao.DespesasDao;
 import br.com.fiap.Dao.InvestimentoDao;
 import br.com.fiap.Dao.ReceitaDao;
+import br.com.fiap.exception.ContaDaoException;
+import br.com.fiap.exception.DespesaDaoException;
+import br.com.fiap.exception.InvestimentoDaoException;
+import br.com.fiap.exception.ReceitaDaoException;
 import br.com.fiap.model.Conta;
 import br.com.fiap.model.Despesas;
 import br.com.fiap.model.Investimento;
@@ -105,8 +109,11 @@ public class Teste {
             daoReceita.insert(receita);
 
             System.out.println("Receita cadastrada!");
-        } catch (Exception e) {
-            System.err.println("Erro ao cadastrar a receita: " + e.getMessage());
+        } catch (ReceitaDaoException e){
+            throw new RuntimeException("Erro no DAO de Receita",e);
+        }catch (Exception e) {
+            System.err.println("Erro inesperado ao cadastrar a receita: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -124,8 +131,10 @@ public class Teste {
                         receita.getCdConta() + " , " +
                         receita.getCdUsuario());
             }
-        } catch (SQLException e) {
-            System.err.println("Erro ao listar as receitas: " + e.getMessage());
+        }  catch (ReceitaDaoException e) {
+            throw new RuntimeException("Erro no DAO de Receita",e);
+        }catch (SQLException e) {
+            System.err.println("Erro ao listar as Receitas: " + e.getMessage());
         }
     }
 
@@ -157,15 +166,18 @@ public class Teste {
             daoDespesas.insert(despesas);
 
             System.out.println("Despesa cadastrada!");
-        } catch (Exception e) {
-            System.err.println("Erro ao cadastrar a despesa: " + e.getMessage());
+        }  catch (DespesaDaoException e) {
+            throw new RuntimeException("Erro no DAO de Despesa");
+        }catch (Exception e) {
+            System.err.println("Erro inesperado ao cadastrar Despesa: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private static void listarDespesas(DespesasDao daoDespesas) {
         try {
             List<Despesas> despesa = daoDespesas.getAll();
-            System.out.println("Lista de despesa:");
+            System.out.println("Lista de Despesas:");
 
             for (Despesas despesas: despesa) {
                 System.out.println(despesas.getCdDespesa() + " , " +
@@ -176,8 +188,10 @@ public class Teste {
                         despesas.getCdConta() + " , " +
                         despesas.getCdUsuario());
             }
-        } catch (SQLException e) {
-            System.err.println("Erro ao listar as despesa: " + e.getMessage());
+        }  catch (DespesaDaoException e) {
+            throw new RuntimeException("Erro no DAO de Despesa",e);
+        }catch (SQLException e) {
+            System.err.println("Erro ao listar as Despesa: " + e.getMessage());
         }
     }
 
@@ -209,8 +223,11 @@ public class Teste {
             daoInvestimento.insert(investimento);
 
             System.out.println("Investimento cadastrado!");
-        } catch (Exception e) {
-            System.err.println("Erro ao cadastrar o Investimento: " + e.getMessage());
+        }  catch (InvestimentoDaoException e) {
+            throw new RuntimeException("Erro no Dao de Investimento");
+        }catch (Exception e) {
+            System.err.println("Erro inesperado ao cadastrar o Investimento: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -228,8 +245,10 @@ public class Teste {
                         investimento.getCdConta() + " , " +
                         investimento.getCdUsuario());
             }
-        } catch (SQLException e) {
-            System.err.println("Erro ao listar o Investimento: " + e.getMessage());
+        }  catch (InvestimentoDaoException e) {
+            throw new RuntimeException("Erro no DAO de Investimento",e);
+        }catch (SQLException e) {
+            System.err.println("Erro ao listar Investimento: " + e.getMessage());
         }
     }
 
@@ -253,15 +272,18 @@ public class Teste {
             daoConta.insert(conta);
 
             System.out.println("Conta cadastrada!");
-        } catch (Exception e) {
-            System.err.println("Erro ao cadastrar a conta: " + e.getMessage());
+        } catch (ContaDaoException e) {
+            throw new RuntimeException("Erro no DAO de conta", e);
+        } catch (Exception e){
+            System.err.println("Erro ao cadastrar Conta: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private static void listarConta(ContaDao daoConta) {
         try {
             List<Conta> contas = daoConta.getAll();
-            System.out.println("Lista de conta:");
+            System.out.println("Lista de Contas:");
 
             for (Conta conta: contas) {
                 System.out.println(conta.getCdConta() + " , " +
@@ -270,8 +292,10 @@ public class Teste {
                         conta.getSaldoConta() + " , " +
                         conta.getCdUsuario());
             }
-        } catch (SQLException e) {
-            System.err.println("Erro ao listar a conta: " + e.getMessage());
+        }  catch (ContaDaoException e) {
+            throw new RuntimeException("Erro ao Dao de Conta",e);
+        }catch (SQLException e) {
+            System.err.println("Erro ao listar as Contas: " + e.getMessage());
         }
     }
 

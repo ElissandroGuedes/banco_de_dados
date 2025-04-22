@@ -1,4 +1,5 @@
 package br.com.fiap.Dao;
+import br.com.fiap.exception.ContaDaoException;
 import br.com.fiap.factory.ConnectionFactory;
 import br.com.fiap.model.Conta;
 import java.sql.Connection;
@@ -20,28 +21,35 @@ public class ContaDao {
         conexao.close();
     }
 
-    public void insert(Conta conta) throws SQLException{
-        PreparedStatement stm = conexao.prepareStatement("INSERT INTO tb_conta (cd_conta,nr_conta,tipo_conta,saldo,cd_usuario) VALUES (seq_conta.nextval, ?,?,?,?)");
-        stm.setString(1, conta.getNrConta());
-        stm.setString(2, conta.getTipoConta());
-        stm.setDouble(3, conta.getSaldoConta());
-        stm.setLong(4, conta.getCdUsuario());
-        stm.executeUpdate();
-    }
-
-    public List<Conta> getAll() throws SQLException {
-        PreparedStatement stm = conexao.prepareStatement("SELECT * FROM tb_conta");
-        ResultSet result = stm.executeQuery();
-        List<Conta> lista = new ArrayList<>();
-        while (result.next()){
-            Long id = result.getLong("cd_conta");
-            String nrConta = result.getString("nr_conta");
-            String tpConta = result.getString("tipo_conta");
-            double sdConta = result.getDouble("saldo");
-            long cdUsuario = result.getInt("cd_usuario");
-            lista.add(new Conta(id, nrConta,tpConta,sdConta, cdUsuario));
+    public void insert(Conta conta) throws SQLException, ContaDaoException {
+        try {
+            PreparedStatement stm = conexao.prepareStatement("INSERT INTO tb_conta (cd_conta,nr_conta,tipo_conta,saldo,cd_usuario) VALUES (seq_conta.nextval, ?,?,?,?)");
+            stm.setString(1, conta.getNrConta());
+            stm.setString(2, conta.getTipoConta());
+            stm.setDouble(3, conta.getSaldoConta());
+            stm.setLong(4, conta.getCdUsuario());
+            stm.executeUpdate();
+        }catch (SQLException e){
+            throw new ContaDaoException("Erro ao inserir a conta", e);
         }
-        return lista;
     }
 
+    public List<Conta> getAll() throws SQLException, ContaDaoException {
+        try {
+            PreparedStatement stm = conexao.prepareStatement("SELECT * FROM tb_conta");
+            ResultSet result = stm.executeQuery();
+            List<Conta> lista = new ArrayList<>();
+            while (result.next()){
+                Long id = result.getLong("cd_conta");
+                String nrConta = result.getString("nr_conta");
+                String tpConta = result.getString("tipo_conta");
+                double sdConta = result.getDouble("saldo");
+                long cdUsuario = result.getInt("cd_usuario");
+                lista.add(new Conta(id, nrConta,tpConta,sdConta, cdUsuario));
+            }
+            return lista;
+        } catch (SQLException e){
+            throw new ContaDaoException("Erro ao buscar a conta",e);
+        }
+    }
 }
